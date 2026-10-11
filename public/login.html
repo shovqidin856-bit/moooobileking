@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish / Ro'yxatdan o'tish</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">❮</a>
+        <h1>MOBILE KING</h1>
+    </header>
+
+    <div class="container">
+        <div class="page-title">TIZIMGA KIRISH (LOGIN)</div>
+
+        <div class="form-card">
+            <div id="error-msg" style="color: #ef4444; margin-bottom: 12px; font-weight: bold; display: none;"></div>
+
+            <div class="form-group">
+                <label>Login (Username)</label>
+                <input type="text" id="username" class="form-control" placeholder="Loginni kiriting" required>
+            </div>
+
+            <div class="form-group">
+                <label>Parol</label>
+                <input type="password" id="password" class="form-control" placeholder="Parolni kiriting" required>
+            </div>
+
+            <button onclick="handleLogin()" class="submit-btn" style="margin-bottom: 10px;">KIRISH</button>
+            <button onclick="handleRegister()" class="submit-btn" style="background: #334155; color: white;">YANGI AKKAUNT OCHISH</button>
+        </div>
+    </div>
+
+    <script>
+        function showError(text) {
+            const err = document.getElementById('error-msg');
+            err.innerText = text;
+            err.style.display = 'block';
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username: u, password: p })
+            }).then(res => res.json()).then(data => {
+                if(data.success) window.location.href = 'index.html';
+                else showError(data.error);
+            });
+        }
+
+        function handleRegister() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ username: u, password: p })
+            }).then(res => res.json()).then(data => {
+                if(data.success) window.location.href = 'index.html';
+                else showError(data.error);
+            });
+        }
+    </script>
+</body>
+</html>
