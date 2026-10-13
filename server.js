@@ -46,7 +46,6 @@ setInterval(() => {
     }
 }, 60 * 1000);
 
-// Jadval va dastlabki sozlamalarni yaratish
 async function initDB() {
     try {
         await pool.query(`CREATE TABLE IF NOT EXISTS users (
@@ -104,7 +103,6 @@ async function initDB() {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`);
 
-        // Admin boshqaradigan telefon modellar chegarasi (masalan: max_iphone_model = 11)
         await pool.query(`CREATE TABLE IF NOT EXISTS settings (
             key TEXT PRIMARY KEY,
             value TEXT
@@ -215,16 +213,13 @@ app.post('/api/logout', (req, res) => {
     res.json({ success: true });
 });
 
-// Ruxsat etilgan iPhone modellarini olish API (Frontend uchun tanlov cheklovi)
 app.get('/api/allowed-models', async (req, res) => {
     try {
         const settingResult = await pool.query("SELECT value FROM settings WHERE key = 'max_iphone_model'");
         const maxModel = settingResult.rows.length > 0 ? parseInt(settingResult.rows[0].value, 10) : 11;
 
-        // iPhone 6 dan maxModel gacha ro'yxatni shakllantirish
         const allModels = ["iPhone 6", "iPhone 6S", "iPhone 7", "iPhone 8", "iPhone X", "iPhone XR", "iPhone XS", "iPhone 11", "iPhone 12", "iPhone 13", "iPhone 14", "iPhone 15", "iPhone 16"];
         
-        // Model raqamini ajratib olib filter qilish
         const allowed = allModels.filter(m => {
             const match = m.match(/\d+/);
             if (!match) return false;
@@ -262,12 +257,10 @@ app.get('/api/phones', async (req, res) => {
     }
 });
 
-// Telefon sotish so'rovini yuborish (Admin belgilagan cheklov bo'yicha model tekshiriladi)
 app.post('/api/sell-request', requireAuth, upload.single('image'), async (req, res) => {
     const { title, brand, model, price, condition, phone_number, description } = req.body;
     
     try {
-        // Admin cheklovini tekshirish (Faqat ruxsat etilgan modellar)
         const settingResult = await pool.query("SELECT value FROM settings WHERE key = 'max_iphone_model'");
         const maxModel = settingResult.rows.length > 0 ? parseInt(settingResult.rows[0].value, 10) : 11;
         
@@ -319,7 +312,6 @@ app.post('/api/custom-order', requireAuth, async (req, res) => {
     }
 });
 
-// ADMIN API ENDPOINTS (Kengaytirilgan imtiyozlar)
 app.get('/api/admin/stats', requireAdmin, async (req, res) => {
     try {
         const userResult = await pool.query("SELECT COUNT(*) as totalUsers FROM users");
@@ -349,7 +341,6 @@ app.get('/api/admin/requests', requireAdmin, async (req, res) => {
     }
 });
 
-// Admin model cheklovini o'zgartirishi uchun API (Masalan: max_iphone_model ni 15 qilish)
 app.post('/api/admin/update-limit', requireAdmin, async (req, res) => {
     const { max_iphone_model } = req.body;
     try {
@@ -405,34 +396,10 @@ app.post('/api/admin/reject-request/:id', requireAdmin, async (req, res) => {
         await pool.query("UPDATE requests SET status = 'rejected' WHERE id = $1", [requestId]);
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ error: err.message});
+        res.status(500).json({ error: err.message });
     }
 });
 
 app.listen(PORT, () => {
     console.log(`MOBILE KING V2 server running on port ${PORT}`);
-});
-// Sahifa yuklanganda admin ruxsat bergan modellarni avtomatik olib kelib select'ga qo'shish
-document.addEventListener('DOMContentLoaded', async () => {
-    const modelSelect = document.getElementById('modelSelect'); // HTML'dagi select elementi ID'si
-    
-    if (modelSelect) {
-        try {
-            const response = await fetch('/api/allowed-models');
-            const data = await response.json();
-            
-            // Avvalgi variantlarni tozalash
-            modelSelect.innerHTML = '<option value="">Modelni tanlang...</option>';
-            
-            // Serverdan kelgan ruxsat etilgan modellarni chiqarish (masalan: iPhone 6 dan 11 gacha)
-            data.allowedModels.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model;
-                option.textContent = model;
-                modelSelect.appendChild(option);
-            });
-        } catch (err) {
-            console.error("Modellarni yuklashda xatolik:", err);
-        }
-    }
 });
