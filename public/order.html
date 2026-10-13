@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyurtma Berish</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">❮</a>
+        <h1>MOBILE KING</h1>
+    </header>
+
+    <div class="container">
+        <div class="page-title">BUYURTMA ASOSIDA TAYYORLASH</div>
+
+        <div class="form-card">
+            <form action="/api/custom-order" method="POST">
+                <div class="form-group">
+                    <label>Sizga kerakli brend</label>
+                    <input type="text" name="brand" class="form-control" placeholder="masalan: iPhone yoki Samsung" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Aniq model</label>
+                    <input type="text" name="model" class="form-control" placeholder="masalan: iPhone 15 Pro Max 256GB" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Sizdagi byudjet</label>
+                    <input type="text" name="budget" class="form-control" placeholder="masalan: $900" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Aloqa raqamingiz</label>
+                    <input type="tel" name="phone_number" class="form-control" placeholder="+998901234567" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Qo'shimcha talablaringiz</label>
+                    <textarea name="details" class="form-control" rows="3" placeholder="Rangi, holati haqida..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">BUYURTMA YUBORISH</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        fetch('/api/me').then(r => r.json()).then(d => {
+            if(!d.loggedIn) {
+                alert("Buyurtma berish uchun avval tizimga kiring!");
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

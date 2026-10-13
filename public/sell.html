@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Telefon sotish - Mobile King</title>
+    <style>
+        /* Suyuq oyna (Liquid Glass) va seryozniy dizayn uslubi */
+        body {
+            background: #0f172a;
+            background-image: radial-gradient(at 10% 20%, rgba(30, 58, 138, 0.3) 0px, transparent 50%),
+                              radial-gradient(at 90% 80%, rgba(88, 28, 135, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .form-box {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        select option {
+            background: #0f172a;
+            color: #fff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container form-box">
+        <h2>Telefon sotish (Zapchast / E'lon)</h2>
+        
+        <!-- E'lon yuborish formasi -->
+        <form action="/api/sell-request" method="POST" enctype="multipart/form-data">
+            
+            <label>Sarlavha:</label>
+            <input type="text" name="title" placeholder="Masalan: iPhone 7 ekran singan" required>
+
+            <label>Brand:</label>
+            <input type="text" name="brand" value="Apple" readonly>
+
+            <!-- MUHIM: Admin belgilagan cheklov bo'yicha modellar chiqadigan joy -->
+            <label>Telefon modeli:</label>
+            <select id="modelSelect" name="model" required>
+                <option value="">Modellar yuklanmoqda...</option>
+            </select>
+
+            <label>Narxi:</label>
+            <input type="text" name="price" placeholder="Masalan: 500,000 so'm" required>
+
+            <label>Holati (Aybi):</label>
+            <input type="text" name="condition" placeholder="Masalan: Ekran alish kerak, Platasi ishlaydi" required>
+
+            <label>Telefon raqamingiz:</label>
+            <input type="text" name="phone_number" placeholder="+998 90 123 45 67" required>
+
+            <label>Qo'shimcha ma'lumot:</label>
+            <textarea name="description" rows="3" placeholder="Batafsil yozing..."></textarea>
+
+            <label>Telefon rasmi:</label>
+            <input type="file" name="image" accept="image/*" required>
+
+            <button type="submit">E'lonni yuborish</button>
+        </form>
+    </div>
+
+    <!-- JavaScript: Serverdan ruxsat etilgan modellarni olib kelib select'ga joylaydi -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const modelSelect = document.getElementById('modelSelect');
+            try {
+                const response = await fetch('/api/allowed-models');
+                const data = await response.json();
+                
+                modelSelect.innerHTML = '<option value="">Modelni tanlang...</option>';
+                
+                data.allowedModels.forEach(model => {
+                    const option = document.createElement('
