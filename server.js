@@ -400,8 +400,6 @@ app.post('/api/admin/reject-request/:id', requireAdmin, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 app.listen(PORT, () => {
     console.log(`MOBILE KING V2 server running on port ${PORT}`);
 });
-
