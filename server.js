@@ -389,21 +389,7 @@ app.post('/api/admin/approve-request/:id', requireAdmin, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-document.addEventListener('DOMContentLoaded', async () => {
-    const modelSelect = document.getElementById('modelSelect');
-    try {
-        const response = await fetch('/api/allowed-models');
-        const data = await response.json();
-        modelSelect.innerHTML = '<option value="">Modelni tanlang...</option>';
-        data.allowedModels.forEach(model => {
-            const option = document.createElement('option');
-            option.value = model;
-            option.textContent = model;
-            modelSelect.appendChild(option);
-        });
-    } catch (err) {
-        console.error("Xatolik:", err);
-    }
+
 });
 app.post('/api/admin/reject-request/:id', requireAdmin, async (req, res) => {
     const requestId = req.params.id;
